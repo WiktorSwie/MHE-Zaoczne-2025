@@ -76,9 +76,9 @@ if __name__ == "__main__":
             n,
             edges,
             50,  # population_size
-            "uniform",  # crossover_method
-            "flip_bit",  # mutation_method
-            "no_improve",  # stop_condition
+            "one_point",  # 'one_point' lub 'uniform'
+            "swap_bits",  # 'flip_bit' lub 'swap_bits'
+            "max_gen", # 'max_gen' lub 'no_improve'
             100,  # max_generations
             15,  # max_no_improvement
             0.1  # mutation_rate
