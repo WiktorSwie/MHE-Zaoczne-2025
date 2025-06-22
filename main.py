@@ -1,6 +1,5 @@
 import sys
-import random
-from utils import read_graph, cut_value, neighbors
+from utils import read_graph, cut_value, neighbors, random_partition
 from maxcut_fullsearch import full_search
 from hill_climb import hill_climbing
 from hill_climb_rand import hill_climbing_random
@@ -20,7 +19,7 @@ if algo == "taboo":
             sys.exit(1)
 
 n, edges = read_graph(path)
-start_partition = [random.choice([0, 1]) for _ in range(n)]
+start_partition = random_partition(n)
 
 if algo == "full_search":
     val, part = full_search(n, edges)

@@ -1,5 +1,4 @@
-from utils import neighbors
-from utils import cut_value
+from utils import neighbors_with_values, cut_value, neighbors
 
 
 def hill_climbing(n, edges, start_partition):
@@ -7,12 +6,9 @@ def hill_climbing(n, edges, start_partition):
     current_value = cut_value(n, edges, current)
 
     while True:
-        neighbor_values = []
-        for neigh in neighbors(current):
-            val = cut_value(n, edges, neigh)
-            neighbor_values.append((val, neigh))
+        neighbor_values = list(neighbors_with_values(n, edges, current))
 
-        best_val, best_neigh = max(neighbor_values, key=lambda x: x[0])
+        best_neigh, best_val = max(neighbor_values, key=lambda x: x[1])
 
         if best_val <= current_value:
             break
@@ -20,3 +16,4 @@ def hill_climbing(n, edges, start_partition):
         current, current_value = best_neigh, best_val
 
     return current_value, current
+

@@ -1,6 +1,7 @@
 import sys
 import random
 
+
 def read_graph(path):
     if path == '-':
         lines = sys.stdin.read().splitlines()
@@ -20,15 +21,28 @@ def read_graph(path):
 
     return max_node + 1, edges
 
+
 def cut_value(n, edges, partition):
+
     total = 0
     for u, v, w in edges:
         if partition[u] != partition[v]:
             total += w
     return total
 
+
 def neighbors(partition):
+
     for i in range(len(partition)):
         new_partition = partition.copy()
         new_partition[i] = 1 - new_partition[i]
         yield new_partition
+
+def neighbors_with_values(n, edges, partition):
+
+    for new_partition in neighbors(partition):
+        yield new_partition, cut_value(n, edges, new_partition)
+
+def random_partition(n):
+
+    return [random.choice([0, 1]) for _ in range(n)]

@@ -1,19 +1,17 @@
 import random
-
-from utils import neighbors
-from utils import cut_value
-
+from utils import neighbors_with_values, cut_value
 
 def hill_climbing_random(n, edges, start_partition):
     current = start_partition
     current_value = cut_value(n, edges, current)
 
     while True:
-        better_neighbors = []
-        for neigh in neighbors(current):
-            val = cut_value(n, edges, neigh)
-            if val > current_value:
-                better_neighbors.append((val, neigh))
+        better_neighbors = [
+            (val, neigh)
+            for neigh, val in neighbors_with_values(n, edges, current)
+            if val > current_value
+        ]
+
         if not better_neighbors:
             break
 
