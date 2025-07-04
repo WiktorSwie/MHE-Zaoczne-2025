@@ -2,7 +2,7 @@ import random
 from utils import cut_value
 
 def crossover_one_point(parent1, parent2):
-    point = random.randint(1, len(parent1)-1)
+    point = random.randint(1, len(parent1) - 1)
     return parent1[:point] + parent2[point:], parent2[:point] + parent1[point:]
 
 def crossover_uniform(parent1, parent2):
@@ -26,16 +26,23 @@ def mutation_swap_bits(solution, mutation_rate=0.1):
         mutated[i], mutated[j] = mutated[j], mutated[i]
     return mutated
 
-def stop_max_generations(current_gen, max_gen):
-    return current_gen >= max_gen
+def stop_condition_max_gen(max_gen):
+    def condition(current_gen, _):
+        return current_gen >= max_gen
+    return condition
 
-def stop_no_improvement(no_improve_count, max_no_improve):
+def stop_condition_no_improve(max_no_improve):
+    def condition(_, no_improve_count):
+        return no_improve_count >= max_no_improve
+    return condition
 
-    return no_improve_count >= max_no_improve
+def get_fitness(individual_with_fitness):
+    return individual_with_fitness[1]
 
 def tournament_selection(population, fitnesses, tournament_size=3):
     participants = random.sample(list(zip(population, fitnesses)), tournament_size)
-    return max(participants, key=lambda x: x[1])[0]
+    best_individual = max(participants, key=get_fitness)
+    return best_individual[0]
 
 def genetic_algorithm(n, edges,
                       population_size=50,
@@ -57,8 +64,8 @@ def genetic_algorithm(n, edges,
     }
 
     stop_conditions = {
-        'max_gen': lambda gen, no_imp: stop_max_generations(gen, max_generations),
-        'no_improve': lambda gen, no_imp: stop_no_improvement(no_imp, max_no_improvement),
+        'max_gen': stop_condition_max_gen(max_generations),
+        'no_improve': stop_condition_no_improve(max_no_improvement),
     }
 
     crossover = crossover_funcs[crossover_method]

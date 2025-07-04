@@ -1,7 +1,9 @@
 from utils import neighbors, cut_value
 
+def get_cut_value(pair):
+    return pair[0]
 
-def taboo_cut(n, edges, start_partition, taboo_size=10, max_iter=1000):
+def taboo_cut(n, edges, start_partition, taboo_size, max_iter=1000):
     current = start_partition
     current_value = cut_value(n, edges, current)
 
@@ -30,7 +32,7 @@ def taboo_cut(n, edges, start_partition, taboo_size=10, max_iter=1000):
             current, current_value = history.pop()
             continue
 
-        candidate_neighbors.sort(key=lambda x: x[0], reverse=True)
+        candidate_neighbors.sort(key=get_cut_value, reverse=True)
         best_val, best_neigh = candidate_neighbors[0]
 
         history.append((current, current_value))

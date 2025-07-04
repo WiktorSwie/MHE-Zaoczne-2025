@@ -1,5 +1,5 @@
 import sys
-from utils import read_graph, cut_value, neighbors, random_partition
+from utils import read_graph, random_partition
 from maxcut_fullsearch import full_search
 from hill_climb import hill_climbing
 from hill_climb_rand import hill_climbing_random
@@ -9,7 +9,7 @@ from genetic import genetic_algorithm
 path = sys.argv[1]
 algo = sys.argv[2]
 
-taboo_size = 10
+taboo_size = None
 
 if algo == "taboo":
     if len(sys.argv) >= 4:

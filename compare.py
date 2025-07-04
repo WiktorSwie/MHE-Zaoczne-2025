@@ -1,11 +1,37 @@
 import time
 import psutil
 import matplotlib.pyplot as plt
-from utils import read_graph, random_partition, cut_value
+from utils import read_graph, random_partition
 from hill_climb import hill_climbing
 from hill_climb_rand import hill_climbing_random
 from taboo import taboo_cut
 from genetic import genetic_algorithm
+
+
+def generate_args_hill():
+    return [n, edges, random_partition(n)]
+
+def generate_args_hill_rand():
+    return [n, edges]
+
+def generate_args_taboo():
+    return [n, edges, random_partition(n), 7, 500]
+
+def generate_args_genetic():
+    return [
+        n,
+        edges,
+        50,            # population_size
+        "one_point",   # crossover_method
+        "swap_bits",   # mutation_method
+        "max_gen",     # stop_condition
+        100,           # max_generations
+        15,            # max_no_improvement
+        0.1            # mutation_rate
+    ]
+
+def wrapped_hill_climb_rand(n, edges):
+    return hill_climbing_random(n, edges, random_partition(n))
 
 def run_experiment(name, func, args_generator, repeat=30):
     results = []
@@ -44,8 +70,8 @@ def plot_results(all_results, metric, title):
     plt.savefig(f"{title.lower().replace(' ', '_')}_{metric}.png")
     plt.close()
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     path = "graph3.txt"
     n, edges = read_graph(path)
 
@@ -54,37 +80,26 @@ if __name__ == "__main__":
     all_results["hill"] = run_experiment(
         "hill",
         hill_climbing,
-        args_generator=lambda: [n, edges, random_partition(n)],
+        args_generator=generate_args_hill,
     )
 
     all_results["hill_rand"] = run_experiment(
         "hill_rand",
-        lambda n, edges: hill_climbing_random(n, edges, random_partition(n)),
-        args_generator=lambda: [n, edges]
+        wrapped_hill_climb_rand,
+        args_generator=generate_args_hill_rand,
     )
 
     all_results["taboo"] = run_experiment(
         "taboo",
         taboo_cut,
-        args_generator=lambda: [n, edges, random_partition(n), 7, 500]
+        args_generator=generate_args_taboo,
     )
 
     all_results["genetic"] = run_experiment(
         "genetic",
         genetic_algorithm,
-        args_generator=lambda: [
-            n,
-            edges,
-            50,  # population_size
-            "one_point",  # 'one_point' lub 'uniform'
-            "swap_bits",  # 'flip_bit' lub 'swap_bits'
-            "max_gen", # 'max_gen' lub 'no_improve'
-            100,  # max_generations
-            15,  # max_no_improvement
-            0.1  # mutation_rate
-        ]
+        args_generator=generate_args_genetic,
     )
 
     for metric in ["value", "cpu_time", "mem_MB"]:
         plot_results(all_results, metric, "Porównanie metod")
-
