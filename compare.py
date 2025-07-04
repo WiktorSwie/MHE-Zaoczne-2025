@@ -12,7 +12,7 @@ def generate_args_hill():
     return [n, edges, random_partition(n)]
 
 def generate_args_hill_rand():
-    return [n, edges]
+    return [n, edges, random_partition(n)]
 
 def generate_args_taboo():
     return [n, edges, random_partition(n), 7, 500]
@@ -30,8 +30,6 @@ def generate_args_genetic():
         0.1            # mutation_rate
     ]
 
-def wrapped_hill_climb_rand(n, edges):
-    return hill_climbing_random(n, edges, random_partition(n))
 
 def run_experiment(name, func, args_generator, repeat=30):
     results = []
@@ -85,7 +83,7 @@ if __name__ == "__main__":
 
     all_results["hill_rand"] = run_experiment(
         "hill_rand",
-        wrapped_hill_climb_rand,
+        hill_climbing_random,
         args_generator=generate_args_hill_rand,
     )
 
